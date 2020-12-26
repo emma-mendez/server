@@ -42,6 +42,18 @@ const databaseHits = {
     ]
 }
 
+app.get('/welcome-message', (req, res) => {
+    res.json({
+        message: 'Hello from my server!',
+        randomJunk: "this is not what we want to show",
+        amythingElse: [
+            'Please hide me',
+            'ps I made a typo in this property nme'
+        ]
+    })
+})
+
+
 // get / send back some simple json
 
 app.get('/username/:id', ( req,res) => {
@@ -49,7 +61,7 @@ app.get('/username/:id', ( req,res) => {
     if (usersDatabase.id.includes(req.params.id)) {
         res.json({
             status : 'success',
-            data : 'Log In Successfull'
+            data : 'Log In Successful'
         })
     } else {
         res.json({
