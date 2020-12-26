@@ -48,7 +48,7 @@ app.get('/welcome-message', (req, res) => {
         randomJunk: "this is not what we want to show",
         amythingElse: [
             'Please hide me',
-            'ps I made a typo in this property nme'
+            'ps I made a typo in this propnpmerty nme'
         ]
     })
 })
@@ -71,14 +71,14 @@ app.get('/username/:id', ( req,res) => {
     }   
 })
 
-app.get('/', ( req,res) => {
+app.get('/free-trial', ( req,res) => {
     res.json({
         status : 'Free Trial Activated',
         data : 'You have 30 days free'
     })
 })
 
-app.get('/checkEmail/:email', ( req,res) => {
+app.get('/', ( req,res) => {
 
     if (fakeDatabase.emails.includes(req.params.email)) {
         res.json({
@@ -102,6 +102,25 @@ app.get('/visits', (req, res) => {
         hits: fakeDatabase.hitNumber
     })
 })
+
+
+// login endpoints
+app.get('/checkUser/:email', ( req,res) => {
+
+    if (fakeDatabase.emails.includes(req.params.email)) {
+        res.json({
+            status : 'success',
+            message: 'Successful Log In'
+        })
+    } else {
+        res.json({
+            status: 'fail',
+            message: 'That email does not exist'
+        })
+    }
+})
+
+
 
 
 // do something to start the server
