@@ -38,5 +38,18 @@ app.get('/', (req, res) => {
     res.render('index.ejs', { name: 'Emma'})
 })
 
+app.get('/login', (req, res) => {
+    res.render('login.ejs')
+
+})
+
+app.get('/register', (req, res) => {
+    res.render('register.ejs')
+
+})
+
+app.post('/register', (req, res) => {
+    
+})
 // start the server
 app.listen(1000, () => {console.log('Emmas Server Up & Running')})
