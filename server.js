@@ -1,50 +1,42 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
-// const {MongoClient} = require('mongodb'); 
-// const client = new MongoClient(uri);
-// const uri = "mongodb://localhost:27017"
+// import express from 'express'
+// import cors from 'cors'
+// const app = express()
 
-app.use(cors())
+// app.set('view-engine', 'ejs')
 
-// login endpoints
-app.get('/logIn', ( req,res) => {
+// app.use(cors())
 
-        res.json({
-            status : 'success',
-            message: 'Logging In'
-})
-})
+// // login endpoints
+// app.get('/logIn', ( req,res) => {
 
-// sign up endpoints
-
-app.get('/signUp', ( req,res) => {
-
-    res.json({
-        status : 'success',
-        message: 'Signing Up'
-})
-})
-
-
-
-
-// app.get('/signUp', ( req,res) => {
-
-//     if (fakeDatabase.emails.includes(req.params.email)) {
-//         res.json({
-//             status : 'success',
-//             message: 'Successful Log In'
-//         })
-//     } else {
-//         res.json({
-//             status: 'fail',
-//             message: 'That email does not exist'
-//         })
-//     }
+//         res.render('index.ejs')
 // })
 
 
+// // test page
+// app.get('/', (req, res) => {
+//     res.render('index.ejs')
+// })
+
+// // sign up endpoints
+
+// app.get('/signUp', ( req,res) => {
+
+//     res.json({
+//         status : 'success',
+//         message: 'Signing Up'
+// })
+// })
+
+
+const express = require('express')
+const app = express()
+
+app.set('view-engine', 'ejs')
+
+app.get('/', (req, res) => {
+    res.render('index.ejs', { name: 'Emma'})
+})
 
 // start the server
 app.listen(1000, () => {console.log('Emmas Server Up & Running')})
