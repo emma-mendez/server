@@ -41,14 +41,15 @@ const session = require('express-session')
 const initializePassport = require('./passport-config')
 initializePassport(
     passport, 
-    email => users.find(user => user.email === email)
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
     )
     
 
 
 const users = []
 
-
+// APP SET & USE
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded({extended: false}))
 app.use(flash());
@@ -60,28 +61,32 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
+// RENDER INDEX PAGE
 
-app.get('/', (req, res) => {
+app.get('/', checkAuthenticated, (req, res) => {
     res.render('index.ejs', { name: 'Emma'})
 })
 
-app.get('/login', (req, res) => {
-    res.render('login.ejs')
+//  GET & POST LOGIN
+app.get('/login', checkAuthenticated, (req, res) => {
+    res.render('login.ejs', { name: req.user.name })
 
 })
 
-app.post('/login', passport.authenticate('local', {
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/',
     failureFlash: true
 }))
 
 
-app.get('/register', (req, res) => {
+//  GET & POST REGISTRATION
+
+app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
 
 })
 
-app.post('/register', async (req, res) => {
+app.post('/register', checkNotAuthenticated, async (req, res) => {
     try {
         // this will be auto generated when linked to Mongo, temporary for now!
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -99,5 +104,21 @@ app.post('/register', async (req, res) => {
     }
 console.log(users)   
 })
+
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+
+    res.redirect('/login')
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
+
 // start the server
 app.listen(1000, () => {console.log('Emmas Server Up & Running')})
