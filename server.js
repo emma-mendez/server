@@ -1,32 +1,3 @@
-// import express from 'express'
-// import cors from 'cors'
-// const app = express()
-
-// app.set('view-engine', 'ejs')
-
-// app.use(cors())
-
-// // login endpoints
-// app.get('/logIn', ( req,res) => {
-
-//         res.render('index.ejs')
-// })
-
-
-// // test page
-// app.get('/', (req, res) => {
-//     res.render('index.ejs')
-// })
-
-// // sign up endpoints
-
-// app.get('/signUp', ( req,res) => {
-
-//     res.json({
-//         status : 'success',
-//         message: 'Signing Up'
-// })
-// })
 if (process.env.NODE_ENV !== 'productiom') {
     require('dotenv').config()
 }
@@ -37,6 +8,10 @@ const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
+const methodOverride = require('method-Override')
+
+
+
 
 const initializePassport = require('./passport-config')
 initializePassport(
@@ -60,16 +35,17 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(methodOverride('_method'))
 
 // RENDER INDEX PAGE
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: 'Emma'})
+    res.render('index.ejs', { name: req.user.name })
 })
 
 //  GET & POST LOGIN
-app.get('/login', checkAuthenticated, (req, res) => {
-    res.render('login.ejs', { name: req.user.name })
+app.get('/login', checkNotAuthenticated, (req, res) => {
+    res.render('login.ejs')
 
 })
 
@@ -103,6 +79,14 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
 
     }
 console.log(users)   
+})
+
+
+// LOG OUT FEATURE
+
+app.delete('/logout', (req, res, next) => {
+    req.logOut()
+    res.redirect('/login')
 })
 
 function checkAuthenticated(req, res, next) {
