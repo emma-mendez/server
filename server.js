@@ -5,23 +5,17 @@ if (process.env.NODE_ENV !== 'productiom') {
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const bcrypt = require('bcrypt')
-const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-Override')
+const MongoClient = require('mongodb').MongoClient;
+
+const uri = `mongodb+srv://test:Richard123@cluster0.enfsj.mongodb.net/test?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 app.use(cors())
 app.use(express.json())
-
-
-const initializePassport = require('./passport-config')
-initializePassport(
-    passport, 
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-    )
-    
 
 
 const users = []
@@ -35,8 +29,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
-app.use(passport.initialize())
-app.use(passport.session())
 app.use(methodOverride('_method'))
 
 
@@ -48,25 +40,20 @@ app.get('/register', (req, res) => {
     })
 })
 
-// RENDER INDEX PAGE
 
-// app.get('/', checkAuthenticated, (req, res) => {
-//     res.render('index.ejs', { name: req.user.name })
-// })
+//  GET & POST REGISTRATION - Route Handler
 
-// //  GET & POST LOGIN
-// app.get('/login', checkNotAuthenticated, (req, res) => {
-//     res.render('login.ejs')
+app.post('/signup', (req, res) => {
+    client.connect(async (err )=> {
 
-// })
+        const usersCollection = client.db("vocal-app-database").collection("users")
+        
+        await usersCollection.insertOne(req.body)
+        // perform actions on the collection object
+        res.json({ message: 'User created! (hopefully)' })
+      });
 
-// app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-//     successRedirect: '/',
-//     failureFlash: true
-// }))
-
-
-//  GET & POST REGISTRATION
+})
 
 app.get('/signup', (req, res) => {
     res.json({
