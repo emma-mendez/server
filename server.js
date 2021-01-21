@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV !== 'productiom') {
+if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
@@ -50,7 +50,10 @@ app.post('/signup', (req, res) => {
         
         await usersCollection.insertOne(req.body)
         // perform actions on the collection object
-        res.json({ message: 'User created! (hopefully)' })
+        console.log("hello")
+
+        console.log(req.body)
+        res.json({ message: "Login Successfull" })
       });
 
 })
