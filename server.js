@@ -1,14 +1,20 @@
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const flash = require('express-flash')
-const session = require('express-session')
-const methodOverride = require('method-Override')
+const express = require('express');
+const cors = require('cors');
+const app = express();
+const flash = require('express-flash');
+const session = require('express-session');
+const methodOverride = require('method-Override');
+const bcrypt = require('bcrypt');
+const saltRounds = 12;
+const myPlaintextPassword = '';
+const someOtherPlaintextPassword = '';
 const MongoClient = require('mongodb').MongoClient;
+
 
 const uri = `mongodb+srv://test:Richard123@cluster0.enfsj.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -32,11 +38,13 @@ app.use(session({
 app.use(methodOverride('_method'))
 
 
-// EXAMPLE JSON ROUTE
-app.get('/register', (req, res) => {
-    res.json({
-        message: 'You got this - this is some server data',
-        areYouLoggedIn: true 
+// ATTEMPT AT DOING THE REGISTRAION PAGE
+app.get('/registration', (req, res) => {
+    client.connect(async (err )=> {
+        
+        console.log("This is a REGISTRATION YAY!!")
+        console.log(req.body)
+        res.json({ message: "Successfully Registered. Please Login" })
     })
 })
 
@@ -46,22 +54,23 @@ app.get('/register', (req, res) => {
 app.post('/signup', (req, res) => {
     client.connect(async (err )=> {
 
-        const usersCollection = client.db("vocal-app-database").collection("users")
-        
-        await usersCollection.insertOne(req.body)
-        // perform actions on the collection object
-        console.log("hello")
+        const userName = req.body.userName
 
-        console.log(req.body)
-        res.json({ message: "Login Successful" })
+        const password = req.body.password
+
+        bcrypt.hash(password, saltRounds, async function(err, hash) {
+            // Store hash in your password DB.
+            const usersCollection = client.db("vocal-app-database").collection("users")
+            await usersCollection.insertOne({ userName, password: hash })
+            
+            console.log("hello")
+            console.log(req.body)
+            res.json({ message: "Login Successful" })
+        });
+        
+        
       });
 
-})
-
-app.get('/signup', (req, res) => {
-    res.json({
-        message: "Signup request received and done!"
-    })
 })
 
 app.post('/example-one', (req, res) => {
@@ -71,7 +80,7 @@ app.post('/example-one', (req, res) => {
     })
 })
 
-app.get('/example-two', (req, res) => {
+app.get('/login', (req, res) => {
     res.json({
         message: "Example 2 leaves me blue"
     })
