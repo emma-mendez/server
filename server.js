@@ -44,7 +44,7 @@ app.get('/registration', (req, res) => {
         
         console.log("This is a REGISTRATION YAY!!")
         console.log(req.body)
-        res.json({ message: "Successfully Registered. Please Login" })
+        res.json({ message: "Successfully Registered. Please Login!" })
     })
 })
 
