@@ -65,7 +65,7 @@ app.post('/signup', (req, res) => {
             
             console.log("hello")
             console.log(req.body)
-            res.json({ message: "Login Successful" })
+            res.json({ message: "Successfully Registered. Please Login" })
         });
         
         
