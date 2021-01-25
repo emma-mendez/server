@@ -44,7 +44,7 @@ app.get('/registration', (req, res) => {
         
         console.log("This is a REGISTRATION YAY!!")
         console.log(req.body)
-        res.json({ message: "Successfully Registered. Please Login!" })
+        res.json({ message: "Welcome To ACS Vocal App. Accessing Servers ..." })
     })
 })
 
@@ -66,6 +66,31 @@ app.post('/signup', (req, res) => {
             console.log("hello")
             console.log(req.body)
             res.json({ message: "Successfully Registered. Please Login!" })
+        });
+        
+        
+      });
+
+})
+
+
+
+
+app.post('/login', (req, res) => {
+    client.connect(async (err )=> {
+
+        const userName = req.body.userName
+
+        const password = req.body.password
+
+        bcrypt.hash(password, saltRounds, async function(err, hash) {
+            // Store hash in your password DB.
+            const usersCollection = client.db("vocal-app-database").collection("users")
+            await usersCollection.insertOne({ userName, password: hash })
+            
+            console.log("hello")
+            console.log(req.body)
+            res.json({ message: "Welcome To ACS Vocal App. Accessing Servers ..." })
         });
         
         
