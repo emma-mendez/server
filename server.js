@@ -26,17 +26,6 @@ app.use(express.json())
 
 const users = []
 
-// APP SET & USE
-app.set('view-engine', 'ejs')
-app.use(express.urlencoded({extended: false}))
-app.use(flash());
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-}))
-app.use(methodOverride('_method'))
-
 
 // ATTEMPT AT DOING THE REGISTRAION PAGE
 app.get('/registration', (req, res) => {
@@ -57,6 +46,12 @@ app.post('/signup', (req, res) => {
         const userName = req.body.userName
 
         const password = req.body.password
+
+        // const  firstName = req.body.userName
+
+        // const lastName = req.body.password
+
+        // const choosePassword = req.body.password
 
         bcrypt.hash(password, saltRounds, async function(err, hash) {
             // Store hash in your password DB.
@@ -79,14 +74,30 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
     client.connect(async (err )=> {
 
+        const  firstName = req.body.userName
+
+        const choosePassword = req.body.password
+
         const userName = req.body.userName
 
-        const password = req.body.password
-
+        const usersCollection = client.db("vocal-app-database").collection("users")
+        const match = await usersCollection.findOne({ userName: userName })
+        
+        if (match) {
+            res.json({
+                message: 'user exists!'
+            })
+        } else {
+            res.json({
+                message: 'user does NOT exist!'
+            })
+        }
+        
+        
         bcrypt.hash(password, saltRounds, async function(err, hash) {
             // Store hash in your password DB.
-            const usersCollection = client.db("vocal-app-database").collection("users")
-            await usersCollection.insertOne({ userName, password: hash })
+            const RegistrationCollection = client.db("vocal-app-database").collection("Registrants")
+            await RegistrationCollection.insertOne({ userName, firstName, lastName, password: hash })
             
             console.log("hello")
             console.log(req.body)
@@ -98,16 +109,27 @@ app.post('/login', (req, res) => {
 
 })
 
-app.post('/example-one', (req, res) => {
-    console.log(req.body)
-    res.json({
-        message: `Example 1 is no fun, but your greeting was ${req.body.greeting}`,
-    })
-})
+app.get('/login-two', (req, res) => {
 
-app.get('/login', (req, res) => {
-    res.json({
-        message: "Example 2 leaves me blue"
+    client.connect(async (err )=> {
+
+        const userName = req.body.userName
+
+        const usersCollection = client.db("vocal-app-database").collection("users")
+        const match = await usersCollection.findOne({ userName: userName })
+        
+        if (match) {
+            res.json({
+                message: 'user exists!'
+            })
+        } else {
+            res.json({
+                message: 'user does NOT exist!'
+            })
+        }
+        
+        
+
     })
 })
 
