@@ -28,9 +28,9 @@ app.post('/signup', (req, res) => {
 
         const password = req.body.password
 
-        const firstName = req.body.userName
+        const firstName = req.body.firstName
 
-        const lastName = req.body.password
+        const lastName = req.body.lastName
 
 
         bcrypt.hash(password, saltRounds, async function(err, hash) {
@@ -54,16 +54,16 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
     client.connect(async ( )=> {
 
-        const firstName = req.body.userName
+        const firstName = req.body.firstName
         const userName = req.body.userName
         const password = req.body.password
         const usersCollection = client.db("vocal-app-database").collection("Registrants")
 
-        const match = await usersCollection.findOne({ userName: userName, password: password})
+        const match = await usersCollection.findOne({ userName: userName})
         
         if (match) {
             res.json({
-                message: 'user exists!'
+                message: 'user exists!' 
             })
         } else {
             res.json({
@@ -72,15 +72,15 @@ app.post('/login', (req, res) => {
         }
         
         
-        bcrypt.hash(password, saltRounds, async function(err, hash) {
-            // Store hash in your password DB.
-            const RegistrationCollection = client.db("vocal-app-database").collection("Registrants")
-            await RegistrationCollection.insertOne({ userName, firstName, password: hash })
+        // bcrypt.hash(password, saltRounds, async function(err, hash) {
+        //     // Store hash in your password DB.
+        //     const RegistrationCollection = client.db("vocal-app-database").collection("Registrants")
+        //     await RegistrationCollection.findOne({ userName, firstName, password: hash })
             
-            console.log("login functioning")
-            console.log(req.body)
-            res.json({ message: "Welcome To ACS Vocal App. Accessing Servers ..." })
-        });
+        //     console.log("login functioning")
+        //     console.log(req.body)
+        //     res.json({ message: "Welcome To ACS Vocal App. Accessing Servers ..." })
+        // });
         
         
       });
