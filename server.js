@@ -98,4 +98,9 @@ app.post('/login', (req, res) => {
 
 
 // start the server
-app.listen(1000, () => {console.log('Emmas Server Up & Running')})
+// app.listen(1000, () => {console.log('Emmas Server Up & Running')})
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+app.listen(port);
