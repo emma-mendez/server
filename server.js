@@ -48,15 +48,10 @@ app.post('/signup', (req, res) => {
 
 })
 
-
-
-
 app.post('/login', (req, res) => {
     client.connect(async ( )=> {
 
-        const firstName = req.body.firstName
         const userName = req.body.userName
-        const password = req.body.password
         const usersCollection = client.db("vocal-app-database").collection("Registrants")
 
         const match = await usersCollection.findOne({ userName: userName})
@@ -71,7 +66,61 @@ app.post('/login', (req, res) => {
             })
         }
         
+      });
+
+    })
+
+app.post('/upload', (req, res) => {
+
+    client.connect(async ( )=> {
+        const audioUpload = req.body.audioUpload
+
+        const usersCollection = client.db("vocal-app-database").collection("audio-uploads")
+        const add = await usersCollection.insertOne({ audioUpload: audioUpload})
         
+        if (add) {
+            res.json({
+                message: 'upload successull!' 
+            })
+        } else {
+            res.json({
+                message: 'upload failed!'
+            })
+        }
+    });
+})
+
+app.get('/files', (req, res) => {
+    client.connect(async ( )=> {
+        const find = await usersCollection.findOne({ audioUpload: audioUpload})
+        
+        if (find) {
+            res.json({
+                message: 'search successull!' 
+            })
+        } else {
+            res.json({
+                message: 'search failed!'
+            })
+        }
+    })
+
+})
+    let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+
+
+{console.log('Emmas Server Up & Running')}
+
+app.listen(port);
+
+
+
+
+
+
         // bcrypt.hash(password, saltRounds, async function(err, hash) {
         //     // Store hash in your password DB.
         //     const RegistrationCollection = client.db("vocal-app-database").collection("Registrants")
@@ -81,11 +130,6 @@ app.post('/login', (req, res) => {
         //     console.log(req.body)
         //     res.json({ message: "Welcome To ACS Vocal App. Accessing Servers ..." })
         // });
-        
-        
-      });
-
-})
 
 
 // LOG OUT FEATURE
@@ -99,8 +143,3 @@ app.post('/login', (req, res) => {
 
 // start the server
 // app.listen(1000, () => {console.log('Emmas Server Up & Running')})
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 8000;
-}
-app.listen(port);
